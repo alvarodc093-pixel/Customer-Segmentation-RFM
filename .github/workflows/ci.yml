@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  analisis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install -r requirements.txt
+      - name: Tests (limpieza, RFM y modelos sobre datos simulados)
+        run: pytest -q
+      - name: El notebook se ejecuta de principio a fin con los datos reales
+        run: python -m nbconvert --to notebook --execute --output /tmp/ejecutado.ipynb analisis.ipynb
+        env:
+          PYTHONPATH: .
+          PYTHONWARNINGS: ignore
